@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced. 
+     An alternate method (rfc include) is described in the references. -->
+
+<!ENTITY RFC1035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY RFC4033 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
+<!ENTITY RFC4034 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4034.xml">
+<!ENTITY RFC4035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
+<!ENTITY RFC6891 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6891.xml">
+<!ENTITY RFC6975 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6975.xml">
+<!ENTITY RFC8080 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8080.xml">
+<!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
+]>
+
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs), 
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space 
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="std" docName="draft-huque-dnssec-alg-nego-00" ipr="trust200902">
+  <!-- category values: std, bcp, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+    <title abbrev="DNSSEC Algorithm Negotiation">Algorithm Negotiation in DNSSEC</title>
+
+    <author fullname="Shumon Huque" initials="S." surname="Huque">
+      <organization>Salesforce</organization>
+      <address>
+        <email>shuque@gmail.com</email>
+	</address>
+	</author>
+
+    <author fullname="Haya Shulman" initials="H." surname="Shulman">
+      <organization>Fraunhofer Institute</organization>
+      <address>
+        <email>haya.shulman@gmail.com</email>
+	</address>
+	</author>
+
+    <date day="18" month="July" year="2017" />
+
+    <!-- Meta-data Declarations -->
+
+    <area>General</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+    <keyword>Internet-Draft</keyword>
+    <keyword>DNS</keyword>
+    <keyword>DNSSEC</keyword>
+    <keyword>Signature</keyword>
+    <keyword>Algorithm</keyword>
+    <keyword>Negotiation</keyword>
+    <keyword>Selection</keyword>
+    <keyword>Indication</keyword>
+
+    <abstract>
+      <t>
+	This document specifies a DNS extension that allows a DNS client
+	to specify a list of DNSSEC algorithms, in preference order, that
+	the client supports. A DNS server upon receipt of this extension 
+	can choose to selectively respond with DNSSEC signatures using
+	the preferred algorithm. This mechanism may make it easier for
+	DNS zone operators to support signing zone data simultaneously
+	with multiple DNSSEC algorithms, without significantly increasing
+	the size of DNS responses. It will also allow an easier way to
+	transition to new algorithms while still retaining support for
+	older DNS validators that do not yet support the new algorithms.
+      </t>
+    </abstract>
+  </front>
+
+
+  <middle>
+
+
+    <section title="Introduction">
+      <t>
+	[ IN PROGRESS ]
+      </t>
+    </section>
+
+
+  </middle>
+
+
+  <!--  *****BACK MATTER ***** -->
+
+  <back>
+    <references title="Normative References">
+      &RFC1035;
+      &RFC4033;
+      &RFC4034;
+      &RFC4035;
+      &RFC6891;
+      &RFC6975;
+    </references>
+
+    <references title="Informative References">
+      &RFC3552;
+      &RFC8080;
+    </references>
+  </back>
+
+</rfc>
