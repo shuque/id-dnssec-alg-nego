@@ -4,12 +4,12 @@
      There has to be one entity for each item to be referenced. 
      An alternate method (rfc include) is described in the references. -->
 
-<!ENTITY RFC1034 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1034.xml">
-<!ENTITY RFC1035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1035.xml">
+<!ENTITY RFC2845 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2845.xml">
 <!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
 <!ENTITY RFC4033 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4033.xml">
 <!ENTITY RFC4034 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4034.xml">
 <!ENTITY RFC4035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
+<!ENTITY RFC5625 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5625.xml">
 <!ENTITY RFC6891 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6891.xml">
 <!ENTITY RFC6975 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6975.xml">
 <!ENTITY RFC8080 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8080.xml">
@@ -104,7 +104,7 @@
       <t>
 	The DNS Security Extensions (DNSSEC) specifications
 	<xref target="RFC4033" /> <xref target="RFC4034" />
-	<xref target="RFC4035" /><xref target="RFC5155" />
+	<xref target="RFC4035" />
 	support multiple signature algorithms. A DNS zone can be
 	signed simultaneously with multiple algorithms, but there
 	is no provision in the current specifications to negotiate the
@@ -289,17 +289,17 @@
     <section anchor="caches" title="Cache Considerations">
       <t>
 	A Validating Resolver answering queries with the DNSSEC-OK bit set
-	from data in its cache needs to a few additional steps. If the
+	from data in its cache needs to take a few additional steps. If the
 	query does not include the Supported Algorithms option, and the
 	resolver has selectively cached signatures of a subset of algorithms
 	supported by the zone containing the query domain name, then it
-	MUST send outbound queries to the authoritative server without
+	MUST re-send outbound queries to the authoritative server without
 	the Supported Algorithms option in order to retrieve the entire
 	set of signatures for the query. If the query includes the
 	Supported Algorithms option, but prefers algorithms known to be
 	supported for the name, but different from what has been cached, 
 	the resolver MUST again send outbound queries to retrieve answers
-	with signatures for the preferred algorithm, by copying the client's
+	with signatures the client prefers, by copying the client's
 	Supported Algorithms option into the outbound query.
       </t>
     </section>
@@ -346,12 +346,21 @@
 	EDNS is a hop-by-hop mechanism. Hence all DNS speakers in the path 
 	from the querier invoking this option to the responding server
 	need to support this mechanism for it to work correctly. DNS proxies
-	along the path that transparently relay requests and responses 
-	should not be a problem. But more complicated proxies and middleboxes
-	that interpret the DNS messages will likely strip off the unrecognized
-	EDNS option, with the result that responding server will not be able
-	to perform selective signature delivery and instead send back 
-	signatures with all algorithms.
+	along the path that transparently relay requests and responses, and
+	largely comply with the implementation guidelines described in
+	<xref target="RFC5625" /> should not be a problem. But more 
+	complicated proxies, middleboxes, forwarding resolvers, etc that 
+	actively interpret DNS messages, but do not understand this new
+	option, will likely strip off the unrecognized option in their
+	outbound queries. The result will be that the responding server 
+	will send back signatures made with the full set of algorithms.
+      </t>
+      <t>
+	There is always a danger that a misbehaving middlebox might
+	block or drop a DNS packet with an unrecognized EDNS option, but
+	this is a threat that applies to almost all DNS extension proposals.
+	And deployment of such extensions provides an opportunity to 
+	identify and remove or fix such misbehaving devices.
       </t>
       <t>
 	An alternative end-to-end mechanism is described in 
@@ -365,10 +374,6 @@
 	in this document, but could be incorporated in future revisions 
 	if there is interest in developing that solution.
       </t>
-    </section>
-
-
-    <section anchor="TODO" title="ToDo List">
     </section>
 
 
@@ -404,16 +409,16 @@
 
   <back>
     <references title="Normative References">
-      &RFC1034;
-      &RFC1035;
       &RFC4033;
       &RFC4034;
       &RFC4035;
+      &RFC5625;
       &RFC6891;
       &RFC6975;
     </references>
 
     <references title="Informative References">
+      &RFC2845;
       &RFC3552;
       &RFC8080;
       <reference anchor="dnssec-nego" target="http://ieeexplore.ieee.org/document/7031814/">
