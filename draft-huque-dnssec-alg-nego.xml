@@ -66,7 +66,7 @@
 	</address>
 	</author>
 
-    <date day="18" month="July" year="2017" />
+    <date day="03" month="July" year="2017" />
 
     <!-- Meta-data Declarations -->
 
@@ -307,15 +307,16 @@
 
     <section anchor="downgrade" title="Preventing Downgrade Attacks">
       <t>
-	There is not cryptographic integrity protection of EDNS0
-	options. In theory, Transaction Signatures could be deployed
-	with per-client keys in closed populations of DNS speakers, 
-	but this is not a viable mechanism in the general case of 
-	arbitrary DNS clients and servers. Hence an active man-in-the-middle 
-	attacker may have stripped out stronger algorithms from the client's 
-	supported algorithms list and forced the server to send back 
-	signatures with a weaker algorithm than it might have otherwise 
-	sent.
+	There is no cryptographic integrity protection of EDNS0
+	options. In theory, <xref target="RFC2845">Transaction 
+	Signatures</xref> could be deployed to integrity protect the 
+	entire query message with per-client keys in closed populations 
+	of DNS speakers, but this is not a viable mechanism in the 
+	general case of arbitrary DNS clients and servers. Hence an 
+	active man-in-the-middle attacker may have stripped out stronger 
+	algorithms from the client's supported algorithms list and 
+	forced the server to send back signatures with a weaker algorithm 
+	than it might have otherwise sent.
       </t>
       <t>
 	In order to detect such attacks, the client SHOULD compare
