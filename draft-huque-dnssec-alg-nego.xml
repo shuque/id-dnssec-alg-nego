@@ -221,7 +221,7 @@
 	<xref target="RFC6975" /> (Signaling Cryptographic Algorithm
 	Understanding). That specification has not seen much adoption or
 	even implementation, and it has been suggested that it could be
-	repurposed to implement the algorithm negotation mechanism described
+	repurposed to implement the algorithm negotiation mechanism described
 	in this document.
       </t>
       <t>
@@ -434,7 +434,7 @@
                 <author initials="H." surname="Shulman"><organization /></author>
                 <date year="2015" month="February" />
             </front>
-            <seriesInfo name="in" value="IEEE Interent Computing" />
+            <seriesInfo name="in" value="IEEE Internet Computing" />
       </reference>
       <reference anchor="nsec5"
 		 target="https://tools.ietf.org/html/draft-vcelak-nsec5">
