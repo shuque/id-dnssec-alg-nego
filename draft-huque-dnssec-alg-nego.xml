@@ -85,7 +85,7 @@
       <t>
 	This document specifies a DNS extension that allows a DNS client
 	to specify a list of DNSSEC algorithms, in preference order, that
-	the client supports. A DNS server upon receipt of this extension
+	the client desires to use. A DNS server upon receipt of this extension
 	can choose to selectively respond with DNSSEC signatures using
 	the most preferred algorithm they support. This mechanism may make
 	it easier for DNS zone operators to support signing zone data
@@ -164,7 +164,7 @@
       <t>
 	This document proposes a new mechanism by which a DNS client
 	when sending a query can indicate an ordered list of DNSSEC
-	signature algorithms it supports. The DNS server can use this
+	signature algorithms it desires to use. The DNS server can use this
 	information to selectively construct a response with only the
 	signatures using the most preferred algorithm that it supports.
       </t>
@@ -246,7 +246,7 @@
 	A client implementing this specification and configured to
 	use it, adds an EDNS0 DNSSEC Preferred Algorithms option to the
 	OPT Pseudo Resource Record in the Additional Section of the
-	query, listing its supported DNSSEC algorithm numbers in
+	query, listing its desired DNSSEC algorithm numbers in
 	preferred order. It only makes sense to add this option if
 	the client is requesting DNSSEC signatures, so the DNSSEC-OK
 	bit in the EDNS Flags field MUST also be set.
@@ -334,7 +334,7 @@
       <t>
         QUESTION: The server may have its own algorithm ranking policy,
 	that might differ from the client. Should we allow the server to
-	select the highest ranked algorithm that it shares in common with
+	select its highest ranked algorithm that it shares in common with
 	the client's list, regardless of the client's preference? This is
 	how some other security protocols do it. But it will likely make
 	it harder for the (DNS) client to reliably detect downgrade attacks,
