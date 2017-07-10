@@ -155,7 +155,7 @@
 	have already appeared or are being proposed:
 	<xref target="RFC8080">EdDSA</xref>,
 	<xref target="nsec5">NSEC5</xref>, and some time time in the near
-	there will be post quantum algorithms. These will likely
+	future there will be post quantum algorithms. These will likely
 	require zone operators to deploy multiple algorithms, and
 	support older algorithms for an extended period of time until
 	the population of validators have upgraded themselves to support
@@ -319,7 +319,7 @@
       </t>
       <t>
 	Hence an active man-in-the-middle attacker could strip out
-	stronger algorithms from the client's supported algorithms list
+	stronger algorithms from the client's preferred algorithms list
 	and force the server to send back signatures with a weaker algorithm
 	than it might have otherwise sent.
       </t>
@@ -418,14 +418,14 @@
       &RFC4033;
       &RFC4034;
       &RFC4035;
-      &RFC5625;
       &RFC6891;
-      &RFC6975;
     </references>
 
     <references title="Informative References">
       &RFC2845;
       &RFC3552;
+      &RFC5625;
+      &RFC6975;
       &RFC8080;
       <reference anchor="dnssec-nego" target="http://ieeexplore.ieee.org/document/7031814/">
             <front>
