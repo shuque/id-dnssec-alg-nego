@@ -10,9 +10,13 @@
 <!ENTITY RFC4034 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4034.xml">
 <!ENTITY RFC4035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
 <!ENTITY RFC5625 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5625.xml">
+<!ENTITY RFC6698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY RFC6891 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6891.xml">
 <!ENTITY RFC6975 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6975.xml">
+<!ENTITY RFC7671 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7671.xml">
+<!ENTITY RFC7696 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7696.xml">
 <!ENTITY RFC8080 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8080.xml">
+<!ENTITY RFC8085 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.8085.xml">
 <!ENTITY I-D.narten-iana-considerations-rfc2434bis SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.narten-iana-considerations-rfc2434bis.xml">
 ]>
 
@@ -41,7 +45,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-huque-dnssec-alg-nego-00" ipr="trust200902">
+<rfc category="std" docName="draft-huque-dnssec-alg-nego-01" ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -63,6 +67,13 @@
       <organization>Fraunhofer Institute</organization>
       <address>
         <email>haya.shulman@gmail.com</email>
+	</address>
+	</author>
+
+    <author fullname="Shane Kerr" initials="S." surname="Kerr">
+      <organization>Oracle Dyn</organization>
+      <address>
+        <email>shane@time-travellers.org</email>
 	</address>
 	</author>
 
@@ -100,7 +111,7 @@
 
   <middle>
 
-    <section title="Introduction">
+    <section anchor="intro" title="Introduction">
       <t>
 	The DNS Security Extensions (DNSSEC) specifications
 	<xref target="RFC4033" /> <xref target="RFC4034" />
@@ -130,7 +141,13 @@
 	be fragmented at the IP layer. Many studies [add citations] have
 	shown that IP fragmentation does not work reliably on today's
 	Internet, because fragments are often blocked by network
-	security devices.
+	security devices. Furthermore, fragments can cause a variety of
+	security and operational issues, as documented in
+	<xref target="frag-bad" />, and previous attempts to deprecate
+	fragments in the IETF. Constraining DNS message sizes to sit
+	comfortably within the network's Path MTU can avoid these
+	problems, and in fact modern <xref target="RFC8085">UDP Usage
+        Guidelines</xref> strongly recommend this.
       </t>
       <t>
 	DNS can run over other transports that can obviate the IP
@@ -154,12 +171,22 @@
 	sign their zones with multiple algorithms. Newer DNSSEC algorithms
 	have already appeared or are being proposed:
 	<xref target="RFC8080">EdDSA</xref>,
-	<xref target="nsec5">NSEC5</xref>, and some time time in the near
-	future there will be post quantum algorithms. These will likely
-	require zone operators to deploy multiple algorithms, and
-	support older algorithms for an extended period of time until
-	the population of validators have upgraded themselves to support
-	the newer algorithms.
+	<xref target="nsec5">NSEC5</xref>, and it is expected that some
+	time in the near future, there will be post quantum signature
+	algorithms for DNSSEC.
+      </t>
+      <t>
+	It is often not feasible to deploy only a new algorithm before
+	the field of deployed validating resolvers have been updated to
+	understand it. This would cause the zone to appear unsigned to
+	those validators, negating the security that DNSSEC provides,
+	and posing critical security problems for applications like
+	DANE <xref target="RFC6698" /> <xref target="RFC7671" /> that
+	rely on DNSSEC authentication. Thus new algorithms will require
+	zone operators to simultaneously deploy multiple algorithms, and
+	support older algorithms for an extended period of time until the
+	population of validators have upgraded themselves to support the
+	newer algorithms.
       </t>
       <t>
 	This document proposes a new mechanism by which a DNS client
@@ -171,7 +198,7 @@
     </section>
 
 
-    <section title="DNSSEC Preferred Algorithms Option">
+    <section anchor="option" title="DNSSEC Preferred Algorithms Option">
       <t>
 	The EDNS0 specification outlined in <xref target="RFC6891" />
 	defines a way to include new options using a standardized mechanism.
@@ -233,6 +260,11 @@
 	it states that the option must not trigger any special processing
 	on the server side.
       </t>
+      <t>
+	In addition to algorithm negotiation, this new option could also
+	subsume the additional function of signaling algorithm understanding
+	originally intended by RFC 6975.
+      </t>
     </section>
 
 
@@ -270,15 +302,18 @@
 	Server SHOULD include in its response, DNSSEC signatures using
 	only the most preferred algorithm that it supports. It also
 	includes the Preferred Algorithms EDNS0 option in the response,
-	to indicate that it recognizes the option, and should include
-	the list of algorithms supported at the server.
+	to indicate that it recognizes the option and has acted on it.
       </t>
       <t>
 	If an Authoritative Server has no algorithms in common with
 	the Preferred Algorithms list in the incoming query, it MUST
 	send back a SERVFAIL response (Response Code 2). This response
 	MUST contain the list of algorithms supported by the server
-	in the EDNS0 Preferred Algorithms option.
+	in the EDNS0 Preferred Algorithms option. [Note: this specific
+	behavior may be controversial since it is a depature from
+	plain DNSSEC's fail open behavior. Alternative behavior could
+	be specified, such as returning a NOERROR response with no
+	signatures.]
       </t>
       <t>
 	If a resolver receives a query from a downstream validating
@@ -332,16 +367,21 @@
 	sent, this may indicate an algorithm downgrade attack.
       </t>
       <t>
-        QUESTION: The server may have its own algorithm ranking policy,
-	that might differ from the client. Should we allow the server to
-	select its highest ranked algorithm that it shares in common with
-	the client's list, regardless of the client's preference? This is
-	how some other security protocols do it. But it will likely make
-	it harder for the (DNS) client to reliably detect downgrade attacks,
-	unless there is a common notion of ranking. One way of addressing
-	this is to define a new zone apex resource record that lists the
-	zone's preferred order of algorithm numbers. This could be queried
-	by resolvers in parallel with DNSKEY RRset queries as part of the
+        TODO: the current protocol specifies a client driven algorithm
+	preference policy, which may not be ideal. It is probably better
+	to have the authoritative server dictate its algorithm preference.
+	After all it is in the servers interest to have clients use what
+	it considers the best algorithm it supports.
+	A future revision of this document may specify this. In such a
+	protocol, the client sends its list of preferred algorithms. And
+	the server picks the best algorithm it supports in common
+	with the client, according to the servers preference list. In
+	this case, for downgrade protection, the client will need an
+	authenticated way to know the server's algorithm preferences.
+	This could be achieved by defining a new resource record placed at
+	the zone's apex ("ALGPREF"?) that contains an ordered list of the
+	server's preferred algorithms. This new record could be queried by
+	resolvers in parallel with DNSKEY RRset queries as part of the
 	iterative resolution process, and similarly cached and refreshed.
       </t>
     </section>
@@ -376,9 +416,10 @@
 	a sequence of labels prepended to the query name, and the addition
 	of a new DNSKEY RR (with a new algorithm number) at the authoritative
 	server to signal to clients that the server recognizes these
-	specially constructed query names. No further details are provided
-	in this document, but could be incorporated in future revisions
-	if there is interest in developing that solution.
+	specially constructed query names. No further details of this
+	alternative mechanism are provided in this document, but could be
+	incorporated in future revisions if there is interest in developing
+	that solution.
       </t>
     </section>
 
@@ -425,8 +466,12 @@
       &RFC2845;
       &RFC3552;
       &RFC5625;
+      &RFC6698;
       &RFC6975;
+      &RFC7671;
+      &RFC7696;
       &RFC8080;
+      &RFC8085;
       <reference anchor="dnssec-nego" target="http://ieeexplore.ieee.org/document/7031814/">
             <front>
                 <title>Cipher-Suite Negotiation for DNSSEC: Hop-by-Hop or End-to-End?</title>
@@ -435,6 +480,15 @@
                 <date year="2015" month="February" />
             </front>
             <seriesInfo name="in" value="IEEE Internet Computing" />
+      </reference>
+      <reference anchor="frag-bad" target="http://ieeexplore.ieee.org/document/6682711/">
+            <front>
+                <title>Fragmentation Considered Poisonous</title>
+                <author initials="A." surname="Herzberg"><organization /></author>
+                <author initials="H." surname="Shulman"><organization /></author>
+                <date year="2013" month="October" />
+            </front>
+            <seriesInfo name="in" value="IEEE Conference on Communications and Network Security" />
       </reference>
       <reference anchor="nsec5"
 		 target="https://tools.ietf.org/html/draft-vcelak-nsec5">
