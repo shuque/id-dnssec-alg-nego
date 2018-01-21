@@ -45,7 +45,7 @@
 <?rfc subcompact="no" ?>
 <!-- keep one blank line between list items -->
 <!-- end of list of popular I-D processing instructions -->
-<rfc category="std" docName="draft-huque-dnssec-alg-nego-01" ipr="trust200902">
+<rfc category="std" docName="draft-huque-dnssec-alg-nego-02" ipr="trust200902">
   <!-- category values: std, bcp, info, exp, and historic
      ipr values: full3667, noModification3667, noDerivatives3667
      you can add the attributes updates="NNNN" and obsoletes="NNNN"
@@ -77,7 +77,7 @@
 	</address>
 	</author>
 
-    <date day="03" month="July" year="2017" />
+    <date day="20" month="January" year="2018" />
 
     <!-- Meta-data Declarations -->
 
@@ -172,7 +172,7 @@
 	have already appeared or are being proposed:
 	<xref target="RFC8080">EdDSA</xref>,
 	<xref target="nsec5">NSEC5</xref>, and it is expected that some
-	time in the near future, there will be post quantum signature
+	time in the future, there will be post quantum signature
 	algorithms for DNSSEC.
       </t>
       <t>
@@ -359,7 +359,7 @@
 	than it might have otherwise sent.
       </t>
       <t>
-	In order to detect such attacks, the client SHOULD compare
+	In order to detect such attacks, the client MUST compare
 	the zone signing algorithms listed in the zone's authenticated
 	DNSKEY RRset, and the preferred list in the query that it sent,
 	to the algorithms seen in the response signatures. If signatures
